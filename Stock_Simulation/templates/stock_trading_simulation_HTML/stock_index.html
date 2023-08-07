@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>株売買シミュレーション</title>
+</head>
+<body>
+    <h1>株売買シミュレーション</h1>
+    <form method="post" action="{% url 'stock_trading_simulation_index' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="計算する">
+    </form>
+    <div id="simulation-result">
+        {% if company_name is not None and current_stock_price is not None %}
+            <p>証券コード: {{ ticker_symbol }}</p>
+            <p>企業名: {{ company_name }}</p>
+            <p>現在株価: {{ current_stock_price }} 円</p>
+            {% if simulation_stock_profit_and_loss is not None %}
+                <p>シミュレーション株価: {{ simulation_stock_price }} 円</p>
+                <p>シミュレーション損益: {{ simulation_stock_profit_and_loss }} 円</p>
+                <p>平均取得単価: {{ acquisition_stock_price }} 円</p>
+                <p>購入株枚数: {{ number_of_shares_purchased }} 株</p>
+            {% else %}
+                <p>シミュレーション株価: シミュレーションデータがありません</p>
+            {% endif %}
+        {% elif %}
+        {% if ticker_symbol is None %}
+        <p>証券コード: 未入力</p>
+            {% if simulation_stock_profit_and_loss is not None %}
+                <p>シミュレーション株価: {{ simulation_stock_price }} 円</p>
+                <p>シミュレーション損益: {{ simulation_stock_profit_and_loss }} 円</p>
+                <p>平均取得単価: {{ acquisition_stock_price }} 円</p>
+                <p>購入株枚数: {{ number_of_shares_purchased }} 株</p>
+                {% endif %}
+
+        {% else %}
+            <p>以下の項目を入力してください：</p>
+            <ul>
+                {% if ticker_symbol is None %}
+                    <li>証券コード</li>
+                {% endif %}
+                {% if simulation_stock_price is None %}
+                    <li>シミュレーション株価</li>
+                {% endif %}
+                {% if acquisition_stock_price is None %}
+                    <li>平均取得単価</li>
+                {% endif %}
+                {% if number_of_shares_purchased is None %}
+                    <li>購入株枚数</li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
