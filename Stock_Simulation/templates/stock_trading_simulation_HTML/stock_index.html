@@ -1,39 +1,61 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>株売買シミュレーション</title>
-</head>
-<body>
-    <h1>株売買シミュレーション</h1>
-    <form method="post" action="{% url 'stock_trading_simulation_index' %}">
+{% extends "base.html" %}
+{% block title %}株売買シミュレーション{% endblock %}
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">株売買シミュレーション</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'home' %}">ホーム<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts:login' %}">ログイン</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:signup' %}">ユーザー登録</a>
+          </li>
+      </ul>
+    </div>
+  </nav>
+  {% endblock header %}
+
+{% block content %}
+    <form method="post" action="{% url 'home' %}" id="calculation-form">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="計算する">
+        <input type="submit" name="calculate" value="計算する">
     </form>
+    <div id="message-container" style="display:none;"></div>
+    
     <div id="simulation-result">
+        <!--もし会社名と現在株価の値があるのなら-->
         {% if company_name is not None and current_stock_price is not None %}
-            <p>証券コード: {{ ticker_symbol }}</p>
-            <p>企業名: {{ company_name }}</p>
-            <p>現在株価: {{ current_stock_price }} 円</p>
+            <p>証券コード : {{ ticker_symbol }}</p>
+            <p>企業名 : {{ company_name }}</p>
+            <p>現在株価 : {{ current_stock_price }} 円</p>
             {% if simulation_stock_profit_and_loss is not None %}
-                <p>シミュレーション株価: {{ simulation_stock_price }} 円</p>
-                <p>シミュレーション損益: {{ simulation_stock_profit_and_loss }} 円</p>
-                <p>平均取得単価: {{ acquisition_stock_price }} 円</p>
+                <p>シミュレーション株価 : {{ simulation_stock_price }} 円</p>
+                <p>シミュレーション損益 : {{ simulation_stock_profit_and_loss }} 円</p>
+                <p>平均取得単価 : {{ acquisition_stock_price }} 円</p>
                 <p>購入株枚数: {{ number_of_shares_purchased }} 株</p>
+                <p>平均取得単価から、5%下落したときの株価: {{ stock_price_down_5per }} 円 </p>
+                <p>平均取得単価から5%下落時の評価額: {{ acquisition_stock_price_fall_5per|floatformat:0 }} 円</p>
+                <P>平均取得単価から5%下落時の損益: {{ acquisition_stock_price_fall_5per_profit_and_loss|floatformat:0 }} 円</P>
             {% else %}
                 <p>シミュレーション株価: シミュレーションデータがありません</p>
             {% endif %}
-        {% elif %}
-        {% if ticker_symbol is None %}
-        <p>証券コード: 未入力</p>
+        {% else %}
+            <p>証券コード: 未入力</p>
             {% if simulation_stock_profit_and_loss is not None %}
                 <p>シミュレーション株価: {{ simulation_stock_price }} 円</p>
                 <p>シミュレーション損益: {{ simulation_stock_profit_and_loss }} 円</p>
                 <p>平均取得単価: {{ acquisition_stock_price }} 円</p>
                 <p>購入株枚数: {{ number_of_shares_purchased }} 株</p>
-                {% endif %}
-
-        {% else %}
+            {% endif %}
             <p>以下の項目を入力してください：</p>
             <ul>
                 {% if ticker_symbol is None %}
@@ -51,5 +73,4 @@
             </ul>
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}
