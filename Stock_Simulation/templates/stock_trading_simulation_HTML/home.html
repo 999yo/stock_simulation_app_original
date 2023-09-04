@@ -1,0 +1,8 @@
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% include "stock_trading_simulation_HTML/logged_in_index.html" %}
+    {% else %}
+        {% include "stock_trading_simulation_HTML/stock_index.html" %}
+    {% endif %}
+{% endblock %}

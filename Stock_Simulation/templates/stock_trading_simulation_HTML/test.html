@@ -32,15 +32,15 @@
     <div id="message-container" style="display:none;"></div>
     
     <div id="simulation-result">
-        {% if ticker_symbol is not None and company_name is not None %}
-        <p>証券コード : {{ ticker_symbol }}</p>
-        <p>企業名 : {{ company_name }}</p>
-        <p>現在株価 : {{ current_stock_price }} 円</p>
+        {% if company_name is not None and current_stock_price is not None %}
+            <p>証券コード : {{ ticker_symbol }}</p>
+            <p>企業名 : {{ company_name }}</p>
+            <p>現在株価 : {{ current_stock_price }} 円</p>
         {% else %}
-        <p>証券コードが未入力か、入力されたコード該当する株がありませんでした。入力した数字が正しいか確認してください</p>
+            <p>証券コードが未入力か、入力されたコード該当する株がありませんでした。入力した数字が正しいか確認してください</p>
         {% endif %}
         
-        {% if simulation_stock_profit_and_loss is not None %}
+        {% if simulation_stock_profit_and_loss and  is not None %}
             <p>シミュレーション株価: {{ simulation_stock_price }} 円</p>
             <p>シミュレーション損益: {{ simulation_stock_profit_and_loss }} 円</p>
             <p>平均取得単価: {{ acquisition_stock_price }} 円</p>
