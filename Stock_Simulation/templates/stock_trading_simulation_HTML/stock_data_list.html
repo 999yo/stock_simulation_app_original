@@ -1,31 +1,37 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}保存されたデータ一覧{% endblock %}
+{% load humanize %}
+{% load custom_filters %}
+{% block title %}シミュレーションリスト{% endblock %}
 {% block header %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">株売買シミュレーション</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}">ホーム<span class="sr-only">(current)</span></a>
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+  <a class="navbar-brand" href="#">株売買シミュレーション</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">HOME<span class="sr-only"></span></a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{% url 'about' %}">ABOUT<span class="sr-only"></span></a>
         </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="{% url 'saved_data_list' %}">シミュレーションリスト</a>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'stock_data_list' %}">シミュレーションリスト</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{% url 'user_view' %}">MY PAGE</a>
         </li>
-        <li class="nav-item ">
-            <a class="nav-link" href="{% url 'accounts:user' %}">ユーザー情報</a>
-          </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts:logout' %}">ログアウト</a>
-          </li>
-      </ul>
-    </div>
-  </nav>
-{% endblock header %}
+      <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+        </li>
+    </ul>
+  </div>
+</nav>
+  {% endblock header %}
 
 {% block content %}
 <table class="table table-striped">
@@ -33,14 +39,16 @@
         <tr>
             <th>証券コード</th>
             <th>企業名</th>
+            <th>日付</th>
             <th>平均取得単価</th>
             <th>購入株枚数</th>
-            <th>シミュレーション株価</th>
             <th>購入時時価総額</th>
+            <th>シミュレーション株価</th>
             <th>シミュレーション損益</th>
             <th>5%下落時の株価</th>
             <th>5%下落時の評価額</th>
             <th>5%下落時の損益</th>
+            <th>詳細</th>
             <th>削除</th>
         </tr>
     </thead>
@@ -49,38 +57,70 @@
         <tr>
             <td>{{ saved_data.ticker_symbol }}</td>
             <td>{{ saved_data.company_name }}</td>
-            <td>{{ saved_data.acquisition_stock_price }}</td>
-            <td>{{ saved_data.number_of_shares_purchased }}</td>
-            <td>{{ saved_data.simulation_stock_price }}</td>
-            <td>{{ saved_data.market_capitalization_at_time_of_purchase }}</td>
-            <td>{{ saved_data.simulation_stock_profit_and_loss }}</td>
-            <td>{{ saved_data.stock_price_down_5per }}</td>
-            <td>{{ saved_data.acquisition_stock_price_fall_5per }}</td>
-            <td>{{ saved_data.acquisition_stock_price_fall_5per_profit_and_loss }}</td>
+            <td>{{ saved_data.date|date:"y/m/d" }}</td>
+            <td>{{ saved_data.acquisition_stock_price|truncate_decimal|format_number|intcomma}} 円</td>
+            <td>{{ saved_data.number_of_shares_purchased|truncate_decimal|format_number|intcomma }} 株</td>
+            <td>{{ saved_data.market_capitalization_at_time_of_purchase|truncate_decimal|format_number|intcomma }} 円</td>
+            <td>{{ saved_data.simulation_stock_price|truncate_decimal|format_number|intcomma }} 円</td>
+            <td>{{ saved_data.simulation_stock_profit_and_loss|truncate_decimal|format_number|intcomma}}円</td>
+            <td>{{ saved_data.stock_price_down_5per|format_number|truncate_decimal|format_number|intcomma }} 円</td>
+            <td>{{ saved_data.acquisition_stock_price_fall_5per|truncate_decimal|format_number|intcomma }} 円</td>
+            <td>{{ saved_data.acquisition_stock_price_fall_5per_profit_and_loss|truncate_decimal|format_number|intcomma }} 円</td>
+            <td><a href="{% url 'stock_chart_view' saved_data.pk %}">詳細</a></td>
             <td>
-                <a href="{% url 'delete_saved_data' saved_data.pk %}" class="btn btn-danger">削除</a>
+              <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+              <script>
+                $(document).ready(function() {
+                    $("#delete-link").click(function(e) {
+                        e.preventDefault(); // リンクのデフォルト動作を無効化
+                        var confirmation = confirm($(this).data("confirm"));
+
+                
+                        if (confirmation) {
+                            // 確認ダイアログで OK がクリックされた場合、リンクをフォロー
+                            window.location.href = $(this).attr("href");
+                        }
+                    });
+                });
+                </script>
+              <a href="{% url 'delete_saved_data' saved_data.pk %}" class="delete-link" data-confirm="本当に削除しますか？">削除</a>
             </td>
-            <div class="modal fade" id="deleteModal{{ saved_data.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">データ削除の確認</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            本当にデータを削除しますか？
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
-                            <a href="{% url 'delete_saved_data' saved_data.pk %}" class="btn btn-danger">削除</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+           
         </tr>
         {% endfor %}
 </tbody>
 </table>
+<nav aria-label="ページネーション">
+	<ul class="pagination">
+
+		{% if page_obj.has_previous %}
+			<li class="page-item">
+				<a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="前へ">
+					<span aria-hidden="true">&laquo;</span>
+				</a>
+			</li>
+		{% endif %}
+
+		{% for page_num in page_obj.paginator.page_range %} 
+			{% if page_num == page_obj.number %}
+				<li class="page-item active">
+					<a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+				</li>
+			{% else %}
+				<li class="page-item">
+					<a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+				</li>
+			{% endif %}
+		{% endfor %}
+
+		{% if page_obj.has_next %}
+			<li class="page-item">
+				<a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="次へ">
+					<span aria-hidden="true">&raquo;</span>
+				</a>
+			</li>
+		{% endif %}
+
+	</ul>
+</nav>
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %}株売買シミュレーション{% endblock %}
+{% load humanize %}
 {% block header %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
     <a class="navbar-brand" href="#">株売買シミュレーション</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -10,13 +11,16 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'home' %}">ホーム<span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="{% url 'home' %}">HOME<span class="sr-only"></span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'accounts:login' %}">ログイン</a>
-        </li>
+            <a class="nav-link" href="{% url 'about' %}">ABOUT<span class="sr-only"></span></a>
+          </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts:signup' %}">ユーザー登録</a>
+            <a class="nav-link" href="{% url 'login' %}">ログイン</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'signup' %}">ユーザー登録</a>
           </li>
       </ul>
     </div>
@@ -42,9 +46,9 @@
         
         {% if simulation_stock_profit_and_loss is not None %}
             <p>シミュレーション株価: {{ simulation_stock_price }} 円</p>
-            <p>シミュレーション損益: {{ simulation_stock_profit_and_loss }} 円</p>
-            <p>平均取得単価: {{ acquisition_stock_price }} 円</p>
-            <p>購入株枚数: {{ number_of_shares_purchased }} 株</p>
+            <p>シミュレーション損益: {{ simulation_stock_profit_and_loss|intcomma }} 円</p>
+            <p>平均取得単価: {{ acquisition_stock_price|intcomma }} 円</p>
+            <p>購入株枚数: {{ number_of_shares_purchased|intcomma }} 株</p>
         {% else %}
         
             <p>以下の項目を入力してください：</p>

@@ -11,7 +11,14 @@ class CalcForm(forms.ModelForm):
             "ticker_symbol":"証券コード",
             "acquisition_stock_price":"平均取得単価",
             "number_of_shares_purchased":"購入株数",
-            "simulation_stock_price":"シミュレーション株価"
+            "simulation_stock_price":"シミュレーション株価",
+            "date":"株を購入した日付",
+        }
+
+        widgets = {
+            'date': forms.NumberInput(attrs={
+                "type": "date"
+            })
         }
 
     def __init__(self, *args, **kwargs):

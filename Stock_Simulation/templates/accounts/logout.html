@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}ユーザー情報{% endblock %}
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+    <a class="navbar-brand" href="#">株売買シミュレーション</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item ">
+          <a class="nav-link" href="{% url 'home' %}">HOME<span class="sr-only"></span></a>
+        </li>
+        <li class="nav-item ">
+            <a class="nav-link" href="{% url 'about' %}">ABOUT<span class="sr-only"></span></a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'stock_data_list' %}">シミュレーションリスト</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'user_view' %}">MY PAGE</a>
+          </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+          </li>
+      </ul>
+    </div>
+  </nav>
+  {% endblock header %}
+
+{% block content %}
+
+<div class="container">
+  <div>
+      <p>{{user.username}} さん</p>
+      <p>ログアウトしますか？</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit"><a href="{% url 'logout' %}">ログアウト</a></button>
+      </form>
+  </div>
+{% endblock %}

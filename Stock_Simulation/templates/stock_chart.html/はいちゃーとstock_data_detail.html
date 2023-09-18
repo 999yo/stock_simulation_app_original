@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}株売買シミュレーション{% endblock %}
+{% load humanize %}
+{% block header %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candlestick Chart</title>
+    <!-- HighchartsのCDNを読み込む -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <!-- Highchartsのモジュールを読み込む -->
+    <script src="https://code.highcharts.com/modules/stock.js"></script>
+    <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+        <a class="navbar-brand" href="#">株売買シミュレーション</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">HOME<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'about' %}">ABOUT<span class="sr-only"></span></a>
+              </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'stock_data_list' %}">シミュレーションリスト</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'user_view' %}">MY PAGE</a>
+              </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+              </li>
+          </ul>
+        </div>
+      </nav>
+  {% endblock header %}
+  
+{% block content %}
+    <h1>{{ stock_data.company_name }}の株価詳細</h1>
+
+    <p>購入した日付 : {{ stock_data.date|date:"Y/m/d" }}</p>
+    <p>購入株価 : {{ stock_data.acquisition_stock_price }} 円</p>
+    <div id="stockChart" style="width: 1800px; height: 800px;"></div>
+    <script>
+        // チャートデータを取得
+        var timestamps = {{ timestamps|safe }};
+        var prices = {{ prices|safe }};
+        var purchasePrice = {{ acquisition_stock_price|default:"N/A" }};
+        
+        // チャートを描画
+        Highcharts.stockChart('stockChart', {
+           
+            title: {
+                text: '{{stock_data.company_name}} Chart'
+            },
+            yAxis: {
+                title: {
+                    text: '株価 (JPY)'
+                },
+                labels: {
+                align: 'right', // ラベルの位置を右寄せにする
+                x: 30, // ラベルを軸から5px左にずらす
+                format: '{value:.1f}' // ラベルの表示フォーマットを設定（小数点2桁まで表示）
+                },
+                minRange: 100 // y軸の最小範囲を設定
+            },
+            xAxis: {
+                type: 'datetime',
+                title: {
+                    text: '期間'
+                },
+                tickInterval: 24 * 3600 * 1000,
+                dateTimeLabelFormats: {
+                    week: '%y/%m/%d'  // 週ごとに日付を表示するフォーマットを設定
+                }
+            },
+            tooltip: {
+                formatter: function () {
+                    var point = this.points[0];
+                    var date = Highcharts.dateFormat('%Y-%m-%d', this.x);
+                    var open = point.point.open.toFixed(1);
+                    var high = point.point.high.toFixed(1);
+                    var low = point.point.low.toFixed(1);
+                    var close = point.point.close.toFixed(1);
+    
+                    // 新たに購入株価を取得し、小数点2桁まで表示
+                    var purchasePrice = {{ acquisition_stock_price }};
+    
+                    var tooltip = '<b>' + date + '</b><br>' +
+                        '始値: ' + open + '<br>' +
+                        '高値: ' + high + '<br>' +
+                        '安値: ' + low + '<br>' +
+                        '終値: ' + close + '<br>' +
+                        '購入株価: ' + purchasePrice.toFixed(1);
+    
+                    return tooltip;
+                }
+            },
+
+            series: [
+                {
+                    type: 'candlestick',
+                    name: 'Stock Price',
+                    data: timestamps.map(function (timestamp, index) {
+                        // Unixタイムスタンプをミリ秒に変換
+                        var date = new Date(timestamp * 1000);
+                        return [
+                            date.getTime(),  // タイムスタンプ
+                            prices[index][0], // 開始価格
+                            prices[index][1], // 高値
+                            prices[index][2], // 安値
+                            prices[index][3]  // 終値
+                        ];
+                    })
+                },
+                {
+                    type: 'line',
+                    name: 'Purchase Price',
+                    data: timestamps.map(function (timestamp) {
+                        return [timestamp * 1000, purchasePrice]; // 購入株価のデータを追加
+                    }),
+                    color: 'pink', // ラインの色を設定
+                    lineWidth: 3, // ラインの太さを設定
+                    yAxis: 0, // ラインを最初のy軸に表示
+                    tooltip: {
+                        valueDecimals: 2 // ラインの値の小数点以下の桁数を指定
+                    }
+                }
+            ],
+            
+        });
+    </script>
+
+{% endblock %}
+
+
+
+import yfinance as yf
+import json
+from django.shortcuts import render, get_object_or_404
+from django.views import View
+from stock_trading_simulation.models import StockInformation
+from datetime import datetime, timedelta
+
+class StockChartView(View):
+    template_name = 'stock_chart.html/stock_data_detail.html'
+
+    def get(self, request, pk,period="1d"):
+        stock_data = get_object_or_404(StockInformation, pk=pk)
+
+        ticker_symbol = stock_data.ticker_symbol + '.T'
+        stock = yf.Ticker(ticker_symbol)
+        if period == "1d":
+            data = stock.history(period="1y", interval="1d", rounding=True)
+        elif period == "1w":
+            data = stock.history(period="5y", interval="1wk", rounding=True)
+        elif period == "1m":
+            data = stock.history(period="10y", interval="1mo", rounding=True)
+        else:
+            data = stock.history(period="1y", interval="1d", rounding=True)
+        acquisition_stock_price = stock_data.acquisition_stock_price
+
+        # 必要なデータを取り出す
+        timestamps = [ts.timestamp() for ts in data.index]
+        prices = data[['Open', 'High', 'Low', 'Close']].values.tolist()
+
+        context = {
+            'stock_data': stock_data,
+            'symbol': ticker_symbol,
+            'timestamps': timestamps,
+            'prices': prices,
+            'acquisition_stock_price': acquisition_stock_price,
+            'selected_period': period 
+        }
+
+        return render(request, self.template_name, context)

@@ -8,24 +8,20 @@ from django.urls import reverse_lazy
 from django.views.generic.list import ListView
 from django.views.generic import View
 from django.shortcuts import redirect
+from django.views.generic.detail import DetailView
+
 
 class CalcFormView(FormView):
     template_name = "stock_trading_simulation_HTML/home.html"
     form_class = CalcForm
     success_url = reverse_lazy('stock_trading_simulation_index') 
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['company_name'] = None
-        context['current_stock_price'] = None
-        context['calculation_performed'] = False
-        return context
       
     def form_valid(self, form):
         ticker_symbol = form.cleaned_data['ticker_symbol']
         acquisition_stock_price = form.cleaned_data['acquisition_stock_price']
         number_of_shares_purchased = form.cleaned_data['number_of_shares_purchased']
         simulation_stock_price = form.cleaned_data['simulation_stock_price']
+        date = form.cleaned_data['date']
        
         try:
             ticker = ticker_symbol + '.T'
@@ -54,6 +50,7 @@ class CalcFormView(FormView):
                 'simulation_stock_price':simulation_stock_price,
                 'number_of_shares_purchased':number_of_shares_purchased,
                 'acquisition_stock_price':acquisition_stock_price,
+                'date':date,
                 'market_capitalization_at_time_of_purchase': None,
                 'simulation_stock_profit_and_loss': None,
                 'acquisition_stock_price_fall_5': None,
@@ -61,9 +58,10 @@ class CalcFormView(FormView):
             })
                 
         if self.request.POST.get('calculate'):
-            # 購入時時価総額
+
+            # 購入時時価総額(平均取得単価*購入株数)
             market_capitalization_at_time_of_purchase = acquisition_stock_price * number_of_shares_purchased
-            # シミュレーション損益
+            # シミュレーション損益(シミュレーション株価*購入株数 -購入時時価総額)
             simulation_stock_profit_and_loss = (simulation_stock_price * number_of_shares_purchased) - market_capitalization_at_time_of_purchase
             #平均取得単価から、5%下落したときの株価（平均取得単価×0.95)
             stock_price_down_5per = acquisition_stock_price*0.95
@@ -71,10 +69,10 @@ class CalcFormView(FormView):
             acquisition_stock_price_fall_5per = market_capitalization_at_time_of_purchase*0.95
             #平均取得単価から5%下落した際の損益(平均取得単価から5%下落した際の評価額-購入時時価総額)
             acquisition_stock_price_fall_5per_profit_and_loss = acquisition_stock_price_fall_5per-market_capitalization_at_time_of_purchase
-
             return render(self.request, self.template_name, {
             'form': form,
             'ticker_symbol':ticker_symbol,
+            'date':date,
             'company_name':company_name,
             'current_stock_price':current_stock_price,
             'simulation_stock_price':simulation_stock_price,
@@ -95,10 +93,24 @@ class SaveResultsView(View):
             acquisition_stock_price = request.POST.get('acquisition_stock_price')
             number_of_shares_purchased = request.POST.get('number_of_shares_purchased')
             simulation_stock_price = request.POST.get('simulation_stock_price')
+            date = request.POST.get('date')
         
         if acquisition_stock_price is None or number_of_shares_purchased is None or simulation_stock_price is None or ticker_symbol is None:
             return JsonResponse({'message': '必要な情報が不足しています。'}, status=400)
+        
+        try:
+                ticker = ticker_symbol + '.T'
+                stock = yf.Ticker(ticker)
+                stock_info = stock.info
+                
+                if stock_info:
+                    company_name = stock_info.get('longName')
+                else:
+                    company_name = None
 
+        except Exception as e:
+            print(e)
+            company_name = None
         try:
             market_capitalization_at_time_of_purchase = float(acquisition_stock_price) * int(number_of_shares_purchased)
             simulation_stock_profit_and_loss = (float(simulation_stock_price) * int(number_of_shares_purchased)) - market_capitalization_at_time_of_purchase
@@ -108,7 +120,9 @@ class SaveResultsView(View):
 
             stock_info = StockInformation(
                 user=self.request.user,
+                date=date,
                 ticker_symbol=ticker_symbol,
+                company_name=company_name,
                 acquisition_stock_price=float(acquisition_stock_price),
                 number_of_shares_purchased=int(number_of_shares_purchased),
                 simulation_stock_price=float(simulation_stock_price),
@@ -119,7 +133,7 @@ class SaveResultsView(View):
                 acquisition_stock_price_fall_5per_profit_and_loss=acquisition_stock_price_fall_5per_profit_and_loss,
             )
             stock_info.save()
-            return JsonResponse({'message': 'データを保存しました。'})
+            return JsonResponse({'message': '上記の結果を保存しました。シミュレーションリストで保存した内容を確認できます。'})
 
         except ValueError:
             return JsonResponse({'message': '入力された情報が不正です。'}, status=400)
@@ -128,9 +142,10 @@ class StockDataListView(ListView):
     template_name = "stock_trading_simulation_HTML/stock_data_list.html"
     model = StockInformation
     context_object_name = "stock_date_list"
+    paginate_by = 10
 
     def get_queryset(self):
-        return StockInformation.objects.filter(user=self.request.user)
+        return StockInformation.objects.filter(user=self.request.user).order_by('acquisition_stock_price')
 
 class DelateSaveDataView(View):
     def get(self, request, pk):
@@ -140,3 +155,7 @@ class DelateSaveDataView(View):
         except StockInformation.DoesNotExist:
             pass
         return redirect('stock_data_list')
+    
+class AboutStockSimulation(View):
+    def get(self, request):
+        return render(request, 'stock_trading_simulation_HTML/about.html')
