@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 
+
 class SignupForm(UserCreationForm):
     class Meta:
         model = User
@@ -10,3 +11,7 @@ class SignupForm(UserCreationForm):
 
 class LoginForm(AuthenticationForm):
     pass
+
+class DeleteAccountForm(forms.Form):
+    fields = "password"
+    password = forms.CharField(widget=forms.PasswordInput)

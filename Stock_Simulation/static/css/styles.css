@@ -1,27 +1,31 @@
-header {
-    position: fixed;
-    top: 0;
-    z-index: 999;
-    width: 100%;
-    height: 50px; /* 高さを50pxに指定 */
-  }
+.navbar {
+  position: fixed; /* Navbarを固定位置に設定 */
+  width: 100%; /* Navbarをページの幅いっぱいに設定 */
+  z-index: 1000; /* 他の要素よりも前面に表示 */
+  top: 0; /* ページ上端に固定 */
+  height: 90px; 
+  box-shadow: 0 2px 4px rgba(100, 112, 136, 0.568);
+  background-color: rgb(159, 233, 214) ; 
 
-
-h1 {
-    font-size: 18px;
 }
 
-.main{
-    margin-top: 100px;
-    float: left;
-    width: 100%;
-    padding: 10px;
-    background-color: #b3d874;
-  }
-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 100px;
-    background-color: #630b0b13;
+.main-content {
+  margin-top: 120px;
+  margin-left: 30px;
+  margin-right: 30px;
+  background-color: rgb(255, 255, 255);
 }
+
+.h1{
+  margin-bottom: 30px;
+}
+
+.page_nation{
+  width: 80%;
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.btn-primary {
+  background: rgb(65, 98, 129);
+  color:rgb(255, 255, 255);

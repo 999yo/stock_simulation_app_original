@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block header %}
-<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-    <a class="navbar-brand" href="#">株売買シミュレーション</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+
   
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
@@ -28,12 +24,18 @@
 
 {% block content %}
 <div class="container">
-  <h2>アカウントを削除</h2>
   <p>アカウントを削除するには、パスワードを入力してください。</p>
   
   <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-danger">アカウントを削除</button>
-  </form>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">パスワード:</label>
+        {{ form.password }}
+        {% for error in form.password.errors %}
+        <span class="error">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-danger" onclick="return confirm('本当にアカウントを削除しますか？')">アカウントを削除</button>
+</form>
 {% endblock %}

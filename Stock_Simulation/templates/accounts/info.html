@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 {% block title %}ユーザー情報{% endblock %}
-{% block header %}
-<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-    <a class="navbar-brand" href="#">株売買シミュレーション</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
+{% block header %} 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item ">
@@ -22,18 +16,18 @@
             <a class="nav-link" href="{% url 'user_view' %}">MY PAGE</a>
           </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+            <a class="nav-link" href="{% url 'logout' %}" onclick="return confirm('本当にログアウトしますか？')">LOGOUT</a>
           </li>
       </ul>
     </div>
   </nav>
-  {% endblock header %}
+{% endblock header %}
 
 {% block content %}
-
+<h1 class="h1">ユーザー情報</h1>
       <p>ユーザー名：{{user.username}}</p>
       <p>登録メールアドレス：{{user.email}}</p>
       <p>アカウント作成日：{{user.date_joined}}</p>
-      <p><a href="{% url 'delete_account' %}">アカウントを削除</a></p>
+      <a class="btn btn-danger" href="{% url 'delete_account' %}" role="button">アカウントを削除</a></p>
 
 {% endblock %}

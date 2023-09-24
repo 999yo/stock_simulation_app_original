@@ -3,12 +3,6 @@
 {% load custom_filters %}
 {% block title %}株売買シミュレーション{% endblock %}
 {% block header %}
-<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-    <a class="navbar-brand" href="#">株売買シミュレーション</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
@@ -24,7 +18,7 @@
             <a class="nav-link" href="{% url 'user_view' %}">MY PAGE</a>
           </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+            <a class="nav-link" href="{% url 'logout' %}" onclick="return confirm('本当にログアウトしますか？')">LOGOUT</a>
           </li>
       </ul>
     </div>
@@ -34,7 +28,7 @@
     <form method="post" action="{% url 'home' %}" id="calculation-form">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" name="calculate" value="計算する">
+        <input type="submit" name="calculate" value="計算する" class="btn btn-success">
     </form>
     
     <div id="simulation-result">
@@ -42,10 +36,11 @@
         <p>証券コード : {{ ticker_symbol }}</p>
         <p>企業名 : {{ company_name }}</p>
         <p>現在株価 : {{ current_stock_price }} 円</p>
-        <p>株を購入した日付: {{ date }} </p>
+            {% if date is not None %}
+                <p>株を購入した日付: {{ date }} </p>
+            {% endif %}
         {% else %}
-        
-            <p>証券コードが未入力か、入力されたコード該当する株がありませんでした。入力した数字が正しいか確認してください</p>
+        <p>証券コードが未入力か、入力されたコード該当する株がありませんでした。入力した数字が正しいか確認してください</p>
         {% endif %}
         
         {% if simulation_stock_profit_and_loss is not None %}
@@ -54,8 +49,8 @@
             <p>平均取得単価: {{ acquisition_stock_price|truncate_decimal|format_number|intcomma}} 円</p>
             <p>購入株枚数: {{ number_of_shares_purchased|truncate_decimal|format_number|intcomma}} 株</p>
             
-            {% if ticker_symbol is not None and company_name is not None and user.is_authenticated  %}
-                <input type="submit" name="save" value="結果を保存する"  id="save-button">
+            {% if ticker_symbol is not None and company_name is not None and user.is_authenticated %}
+            <button type="submit" name="save" class="btn btn-success"" id="save-button">結果を保存する</button>
                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                 <script>
                 $(document).ready(function() {
@@ -93,6 +88,9 @@
                 {% endif %}
                 {% if number_of_shares_purchased is None %}
                     <li>購入株枚数</li>
+                {% endif %}
+                {% if date is None %}
+                    <li>株を購入した日付</li>
                 {% endif %}
             </ul>
         {% endif %}

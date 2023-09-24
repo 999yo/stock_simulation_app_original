@@ -1,17 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}株売買シミュレーション{% endblock %}
 {% load humanize %}
 {% block header %}
   {% if user.is_authenticated %}
   </style>
-  <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-      <a class="navbar-brand mx-auto" href="{% url 'home' %}">株売買シミュレーション</a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
-    <div class="collapse navbar-collapse " id="navbarSupportedContent">
+ 
+    <div class="collapse navbar-collapse justify-content-between nav.sticky-top" id="navbarSupportedContent">
       <ul class="navbar-nav">
         <li class="nav-item ">
           <a class="nav-link" href="{% url 'home' %}">HOME<span class="sr-only"></span></a>
@@ -26,17 +21,14 @@
             <a class="nav-link" href="{% url 'user_view' %}">MY PAGE</a>
           </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+          <a class="nav-link" href="{% url 'logout' %}" onclick="return confirm('本当にログアウトしますか？')">LOGOUT</a>
           </li>
       </ul>
     </div>
   </nav>
+  
   {% else %}
-  <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-    <a class="navbar-brand" href="#">株売買シミュレーション</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  
   
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
@@ -61,15 +53,17 @@
 {% endblock header %}
 
 {% block content %}
-<h1>株売買シミュレーションとは</h1>
-
-<p class="text-left">株売買シミュレーションは株式売買における損益を計算するツールです。株式投資は多くの人にとって魅力的ですが、損失を避けることができず、損失を最小限に抑えることが重要です。</p>
-  <p class="text-left">しかし、多くの投資家が直面するのが、損失が発生した場合にどのように対処すべきか、また損失を限定し、投資を最適化する方法を見つけることの難しさです。</p>
-  <p class="text-left">この株売買シミュレーションアプリを活用することで、損失を予測し、計画的な投資を行うことが可能です。アプリを使って以下のことができます：</p>
-  <ul>
-    <li>購入した株数やシミュレーション株価を入力し、ポートフォリオ全体の損益を計算します。</li>
-    <li>損失が発生した場合、適切な損切り戦略を立て、リスクを最小限に抑えます。</li>
-    <li>株式投資における予測されるリスクと報酬を評価し、賢明な投資判断をサポートします。</li>
-  </ul>
-  <p class="text-left">思考停止を避け、計画的な投資を実現するために、このアプリを活用してみてください。あなたの投資戦略を最適化し、資産の成長をサポートします。</p>
+<div class = "main_content">
+    
+  <h1 class="h1">株売買シミュレーションとは</h1>
+  <p>株売買シミュレーションは株式売買における損益を計算するツールです。株式投資は多くの人にとって魅力的ですが、損失を避けることができず、損失を最小限に抑えることが重要です。</p>
+    <p>しかし、多くの投資家が直面するのが、損失が発生した場合にどのように対処すべきか、また損失を限定し、投資を最適化する方法を見つけることの難しさです。</p>
+    <p>この株売買シミュレーションアプリを活用することで、損失を予測し、計画的な投資を行うことが可能です。アプリを使って以下のことができます：</p>
+    <ul>
+      <li>購入した株数やシミュレーション株価を入力し、ポートフォリオ全体の損益を計算します。</li>
+      <li>損失が発生した場合、適切な損切り戦略を立て、リスクを最小限に抑えます。</li>
+      <li>株式投資における予測されるリスクと報酬を評価し、賢明な投資判断をサポートします。</li>
+    </ul>
+    <p>思考停止を避け、計画的な投資を実現するために、このアプリを活用してみてください。あなたの投資戦略を最適化し、資産の成長をサポートします。</p>
+  </div>
 {% endblock %}

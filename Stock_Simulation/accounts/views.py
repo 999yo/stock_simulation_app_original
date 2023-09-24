@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.views import View
-from .forms import SignupForm, LoginForm
+from .forms import SignupForm, LoginForm, DeleteAccountForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
@@ -58,16 +58,22 @@ class DeleteAccountView(View):
     template_name = 'accounts/delete_account.html'
 
     def get(self, request):
-        # ユーザーにパスワードを確認するフォームを表示
-        form = PasswordChangeForm(request.user)
+        # ユーザーにパスワードを入力するフォームを表示
+        form = DeleteAccountForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        form = PasswordChangeForm(request.user, request.POST)
+        form = DeleteAccountForm(request.POST)
         if form.is_valid():
-            # パスワードが正しい場合、ユーザーを削除
-            request.user.delete()
-            logout(request)  # ユーザーをログアウトさせる
-            return redirect('home')  # 削除後にリダイレクトするURLを指定
-
+            password = form.cleaned_data['password']
+            # パスワードが正しいかチェック
+            if request.user.check_password(password):
+                # パスワードが正しい場合、ユーザーを削除
+                request.user.delete()
+                logout(request)  # ユーザーをログアウトさせる
+                return redirect('home')  # 削除後にリダイレクトするURLを指定
+            else:
+                # パスワードが正しくない場合のエラーメッセージ
+                form.add_error('password', 'パスワードが正しくありません。')
+        
         return render(request, self.template_name, {'form': form})
