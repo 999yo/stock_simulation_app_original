@@ -6,7 +6,9 @@ class CalcForm(forms.ModelForm):
         model = StockInformation
         exclude=["user","company_name","market_capitalization_at_time_of_purchase",
                 "simulation_stock_profit_and_loss","simulation_stock_profit_and_loss","stock_price_down_5per",
-                "acquisition_stock_price_fall_5per","acquisition_stock_price_fall_5per_profit_and_loss"]
+                "acquisition_stock_price_fall_5per","acquisition_stock_price_fall_5per_profit_and_loss",
+                "stock_price_down_10per","acquisition_stock_price_fall_10per","acquisition_stock_price_fall_10per_profit_and_loss",
+                "stock_price_down_30per","acquisition_stock_price_fall_30per","acquisition_stock_price_fall_30per_profit_and_loss"]
         labels = {
             "ticker_symbol":"証券コード",
             "acquisition_stock_price":"平均取得単価",

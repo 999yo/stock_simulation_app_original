@@ -6,61 +6,63 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'home' %}">HOME<span class="sr-only"></span></a>
+          <a class="nav-link" href="{% url 'home' %}">Home<span class="sr-only"></span></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'about' %}">ABOUT<span class="sr-only"></span></a>
+            <a class="nav-link" href="{% url 'about' %}">About<span class="sr-only"></span></a>
           </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'stock_data_list' %}">シミュレーションリスト</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'user_view' %}">MY PAGE</a>
+            <a class="nav-link" href="{% url 'user_view' %}">My Page</a>
           </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}" onclick="return confirm('本当にログアウトしますか？')">LOGOUT</a>
+            <a class="nav-link" href="{% url 'logout' %}" onclick="return confirm('本当にログアウトしますか？')">Logout</a>
           </li>
       </ul>
     </div>
   </nav>
-  {% endblock header %}
+{% endblock header %}
+
 {% block content %}
     <form method="post" action="{% url 'home' %}" id="calculation-form">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" name="calculate" value="計算する" class="btn btn-success">
     </form>
-    
-    <div id="simulation-result">
-        {% if ticker_symbol is not None and company_name is not None %}
+    <div id="message-container">
+    {% if ticker_symbol is not None and company_name is not None %}
         <p>証券コード : {{ ticker_symbol }}</p>
         <p>企業名 : {{ company_name }}</p>
         <p>現在株価 : {{ current_stock_price }} 円</p>
-            {% if date is not None %}
-                <p>株を購入した日付: {{ date }} </p>
-            {% endif %}
-        {% else %}
-        <p>証券コードが未入力か、入力されたコード該当する株がありませんでした。入力した数字が正しいか確認してください</p>
+        {% if date is not None %}
+            <p>株を購入した日付: {{ date }} </p>
         {% endif %}
-        
-        {% if simulation_stock_profit_and_loss is not None %}
-            <p>シミュレーション株価: {{ simulation_stock_price|truncate_decimal|format_number|intcomma }} 円</p>
-            <p>シミュレーション損益: {{ simulation_stock_profit_and_loss|truncate_decimal|format_number|intcomma }} 円</p>
-            <p>平均取得単価: {{ acquisition_stock_price|truncate_decimal|format_number|intcomma}} 円</p>
-            <p>購入株枚数: {{ number_of_shares_purchased|truncate_decimal|format_number|intcomma}} 株</p>
-            
-            {% if ticker_symbol is not None and company_name is not None and user.is_authenticated %}
-            <button type="submit" name="save" class="btn btn-success"" id="save-button">結果を保存する</button>
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                <script>
+    {% endif %}
+    {% if simulation_stock_profit_and_loss is not None %}
+        <p>シミュレーション株価: {{ simulation_stock_price|truncate_decimal|format_number|intcomma }} 円</p>
+        <p>シミュレーション損益: {{ simulation_stock_profit_and_loss|truncate_decimal|format_number|intcomma }} 円</p>
+        <p>平均取得単価: {{ acquisition_stock_price|truncate_decimal|format_number|intcomma}} 円</p>
+        <p>購入株枚数: {{ number_of_shares_purchased|truncate_decimal|format_number|intcomma}} 株</p>
+        <p>平均取得単価から5%下落した時の株価: {{stock_price_down_5per|truncate_decimal|format_number|intcomma }} 円</p>
+        <p>平均取得単価から5%下落した際の損益:{{ acquisition_stock_price_fall_5per_profit_and_loss|truncate_decimal|format_number|intcomma }}円</p>
+        <p>平均取得単価から10%下落した時の株価: {{stock_price_down_10per|truncate_decimal|format_number|intcomma }} 円</p>
+        <p>平均取得単価から10%下落した際の損益:{{ acquisition_stock_price_fall_10per_profit_and_loss|truncate_decimal|format_number|intcomma }}円</p>
+        <p>平均取得単価から30%下落した時の株価: {{stock_price_down_30per|truncate_decimal|format_number|intcomma }} 円</p>
+        <p>平均取得単価から30%下落した際の損益:{{ acquisition_stock_price_fall_30per_profit_and_loss|truncate_decimal|format_number|intcomma }}円</p>
+        {% if user.is_authenticated %}
+            <button type="submit" name="save" class="btn btn-success"" id="save-button" onclick="return confirm('結果を保存しますか？')">結果を保存する</button>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
                 $(document).ready(function() {
                     $('#save-button').click(function() {
                         $.ajax({
-                            url: '{% url "save_results" %}',  // 保存用のURLを指定
+                            url: '{% url "save_results" %}',
                             method: 'POST',
                             data: $('#calculation-form').serialize(),
                             success: function(data) {
-                                $('#message-container').text(data.message);
+                                $('#message-container').text(data.message)
                                 $('#message-container').show();
                             },
                             error: function() {
@@ -70,30 +72,40 @@
                         });
                     });
                 });
-                </script>
-            {% endif %}
-            
-        {% else %}
-
-            <p>以下の項目を入力してください：</p>
-            <ul>
-                {% if ticker_symbol is None %}
-                    <li>証券コード</li>
-                {% endif %}
-                {% if simulation_stock_price is None %}
-                    <li>シミュレーション株価</li>
-                {% endif %}
-                {% if acquisition_stock_price is None %}
-                    <li>平均取得単価</li>
-                {% endif %}
-                {% if number_of_shares_purchased is None %}
-                    <li>購入株枚数</li>
-                {% endif %}
-                {% if date is None %}
-                    <li>株を購入した日付</li>
-                {% endif %}
-            </ul>
+            </script>
         {% endif %}
-    </div>
-    <div id="message-container" style="display: none;"></div>
+    {% endif %}
+
+{% if request.method == "POST" %}
+    {% if ticker_symbol is None or simulation_stock_price is None or acquisition_stock_price is None or number_of_shares_purchased is None or data is None %}
+        <p>以下の項目を入力してください：</p>
+        <ul>
+            {% if ticker_symbol is None %}
+                <li>証券コード</li>
+            {% endif %}
+            {% if simulation_stock_price is None %}
+                <li>シミュレーション株価</li>
+            {% endif %}
+            {% if acquisition_stock_price is None %}
+                <li>平均取得単価</li>
+            {% endif %}
+            {% if number_of_shares_purchased is None %}
+                <li>購入株枚数</li>
+            {% endif %}
+            {% if date is None %}
+                <li>株を購入した日付</li>
+            {% endif %}
+        </ul>
+    {% endif %}
+    {% if ticker_symbol is not None and company_name is None %}
+        <p>入力された値では、該当する企業が見つかりませんでした。</p>
+        <p>証券コードを正しく入力してください</p>
+    {% endif %}
+    {% if ticker_symbol is not None and company_name is not None and simulation_stock_profit_and_loss is not None %}
+        {% if date is None %}
+            <p>株を購入した日付が未入力です。</p>
+        {% endif %}
+    {% endif %}
+{% endif %}
+</div>
 {% endblock %}

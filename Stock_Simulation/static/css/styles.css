@@ -5,7 +5,7 @@
   top: 0; /* ページ上端に固定 */
   height: 90px; 
   box-shadow: 0 2px 4px rgba(100, 112, 136, 0.568);
-  background-color: rgb(159, 233, 214) ; 
+  background-color: rgba(116, 221, 195, 0.726) ; 
 
 }
 
@@ -26,6 +26,27 @@
   max-width: 500px;
 }
 
-.btn-primary {
-  background: rgb(65, 98, 129);
-  color:rgb(255, 255, 255);
+.table-responsive{
+  margin: 0 auto;
+}
+
+.table{
+  margin-bottom: 20px;
+}
+.th5,.td5 {
+  background-color:  rgba(145, 174, 228, 0.39);
+}
+.th10,.td10 {
+  background-color:  rgba(145, 174, 228, 0.678);
+}
+.th30,.td30 {
+  background-color: rgb(145, 174, 228);
+}
+
+.current0{
+  background-color: pink;
+}
+
+.current_profit_and_loss{
+  background-color: rgba(243, 183, 155, 0.925);
+}

@@ -22,6 +22,12 @@ class StockInformation(models.Model):
     acquisition_stock_price_fall_5per = models.FloatField(blank=True, null=True)
     #5%下落した時の損失益
     acquisition_stock_price_fall_5per_profit_and_loss = models.FloatField(blank=True, null=True)
+    stock_price_down_10per = models.FloatField(blank=True, null=True)
+    acquisition_stock_price_fall_10per = models.FloatField(blank=True, null=True)
+    acquisition_stock_price_fall_10per_profit_and_loss = models.FloatField(blank=True, null=True)
+    stock_price_down_30per = models.FloatField(blank=True, null=True)
+    acquisition_stock_price_fall_30per = models.FloatField(blank=True, null=True)
+    acquisition_stock_price_fall_30per_profit_and_loss = models.FloatField(blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     
     def __str__(self):
