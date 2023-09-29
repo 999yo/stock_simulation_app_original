@@ -43,7 +43,7 @@
     </div>
   </nav>
   {% endif %}
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
   <link rel="stylesheet" type="text/css" href="{% static 'css/about/about.css' %}">
 
   {% endblock header %}
@@ -60,14 +60,12 @@
 </div>
 <body>
   <ul class="slider">
-    
     <li><img src="{% static 'image/about/simlation_result.jpg' %}" alt=""></li>
     <li><img src="{% static 'image/about/simulation_list.jpg' %}" alt=""></li>
     <li><img src="{% static 'image/about/simulation_detail.jpg' %}" alt=""></li>
-    
   </ul>
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
   <script src="{% static 'js/about/about.js' %}"></script>
 
 </body>
