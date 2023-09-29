@@ -1,5 +1,6 @@
 from django import forms
 from .models import StockInformation
+import datetime 
 
 class CalcForm(forms.ModelForm):
     class Meta:

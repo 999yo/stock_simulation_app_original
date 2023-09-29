@@ -3,9 +3,7 @@
 {% block title %}株売買シミュレーション{% endblock %}
 {% load humanize %}
 {% block header %}
-  {% if user.is_authenticated %}
-  </style>
- 
+  {% if user.is_authenticated %} 
     <div class="collapse navbar-collapse justify-content-between nav.sticky-top" id="navbarSupportedContent">
       <ul class="navbar-nav">
         <li class="nav-item ">
@@ -26,10 +24,7 @@
       </ul>
     </div>
   </nav>
-  
   {% else %}
-  
-  
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -47,10 +42,11 @@
       </ul>
     </div>
   </nav>
-
   {% endif %}
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/about/about.css' %}">
 
-{% endblock header %}
+  {% endblock header %}
 
 {% block content %}
 <div class = "main_content">
@@ -61,5 +57,20 @@
   <p>株式投資でありがちなのが、株の損失を確定できず、株を何年も保有し続ける「株の塩漬け」です。</p>
   <p>元本を効率的に活用し、大きな損失を抑えるためには、あらかじめ許容できる損失を設定し、その基準に従って株を購入することが重要です。</p>
   <p>このアプリを活用して、計画的な株式投資を行いましょう</p>
-  </div>
+</div>
+<body>
+  <ul class="slider">
+    
+    <li><img src="{% static 'image/about/simlation_result.jpg' %}" alt=""></li>
+    <li><img src="{% static 'image/about/simulation_list.jpg' %}" alt=""></li>
+    <li><img src="{% static 'image/about/simulation_detail.jpg' %}" alt=""></li>
+    
+  </ul>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+  <script src="{% static 'js/about/about.js' %}"></script>
+
+</body>
+
+
 {% endblock %}

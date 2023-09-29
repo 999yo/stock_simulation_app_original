@@ -1,23 +1,30 @@
+.page-container {
+  min-height: 100vh; /* 最小の高さをビューポートの高さに設定 */
+  padding: 20px; /* 適切な余白を追加 */
+  box-sizing: border-box; /* ボックスサイズを要素全体に適用 */
+}
+
 .navbar {
   position: fixed; /* Navbarを固定位置に設定 */
   width: 100%; /* Navbarをページの幅いっぱいに設定 */
   z-index: 1000; /* 他の要素よりも前面に表示 */
   top: 0; /* ページ上端に固定 */
-  height: 90px; 
+  height: 60px; 
   box-shadow: 0 2px 4px rgba(100, 112, 136, 0.568);
-  background-color: rgba(116, 221, 195, 0.726) ; 
+  background-color: rgb(125, 226, 201) ; 
 
 }
 
+
 .main-content {
-  margin-top: 120px;
+  margin-top: 80px;
   margin-left: 30px;
   margin-right: 30px;
   background-color: rgb(255, 255, 255);
 }
 
 .h1{
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .page_nation{

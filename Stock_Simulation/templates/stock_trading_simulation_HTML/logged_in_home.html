@@ -26,13 +26,15 @@
 {% endblock header %}
 
 {% block content %}
+<p>以下の5つのフォームを全て入力すると、結果がシミュレーションリストへ保存されます。</p>
     <form method="post" action="{% url 'home' %}" id="calculation-form">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" name="calculate" value="計算する" class="btn btn-success">
     </form>
+    
     <div id="message-container">
-    {% if ticker_symbol is not None and company_name is not None %}
+        {% if ticker_symbol is not None and company_name is not None %}
         <p>証券コード : {{ ticker_symbol }}</p>
         <p>企業名 : {{ company_name }}</p>
         <p>現在株価 : {{ current_stock_price }} 円</p>
@@ -40,72 +42,71 @@
             <p>株を購入した日付: {{ date }} </p>
         {% endif %}
     {% endif %}
+    
     {% if simulation_stock_profit_and_loss is not None %}
         <p>シミュレーション株価: {{ simulation_stock_price|truncate_decimal|format_number|intcomma }} 円</p>
         <p>シミュレーション損益: {{ simulation_stock_profit_and_loss|truncate_decimal|format_number|intcomma }} 円</p>
-        <p>平均取得単価: {{ acquisition_stock_price|truncate_decimal|format_number|intcomma}} 円</p>
-        <p>購入株枚数: {{ number_of_shares_purchased|truncate_decimal|format_number|intcomma}} 株</p>
+        <p>平均取得単価: {{ acquisition_stock_price|truncate_decimal|format_number|intcomma }} 円</p>
+        <p>購入株枚数: {{ number_of_shares_purchased|truncate_decimal|format_number|intcomma }} 株</p>
         <p>平均取得単価から5%下落した時の株価: {{stock_price_down_5per|truncate_decimal|format_number|intcomma }} 円</p>
-        <p>平均取得単価から5%下落した際の損益:{{ acquisition_stock_price_fall_5per_profit_and_loss|truncate_decimal|format_number|intcomma }}円</p>
+        <p>平均取得単価から5%下落した際の損益: {{ acquisition_stock_price_fall_5per_profit_and_loss|truncate_decimal|format_number|intcomma }} 円</p>
         <p>平均取得単価から10%下落した時の株価: {{stock_price_down_10per|truncate_decimal|format_number|intcomma }} 円</p>
-        <p>平均取得単価から10%下落した際の損益:{{ acquisition_stock_price_fall_10per_profit_and_loss|truncate_decimal|format_number|intcomma }}円</p>
+        <p>平均取得単価から10%下落した際の損益: {{ acquisition_stock_price_fall_10per_profit_and_loss|truncate_decimal|format_number|intcomma }} 円</p>
         <p>平均取得単価から30%下落した時の株価: {{stock_price_down_30per|truncate_decimal|format_number|intcomma }} 円</p>
-        <p>平均取得単価から30%下落した際の損益:{{ acquisition_stock_price_fall_30per_profit_and_loss|truncate_decimal|format_number|intcomma }}円</p>
-        {% if user.is_authenticated %}
-            <button type="submit" name="save" class="btn btn-success"" id="save-button" onclick="return confirm('結果を保存しますか？')">結果を保存する</button>
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script>
-                $(document).ready(function() {
-                    $('#save-button').click(function() {
-                        $.ajax({
-                            url: '{% url "save_results" %}',
-                            method: 'POST',
-                            data: $('#calculation-form').serialize(),
-                            success: function(data) {
-                                $('#message-container').text(data.message)
-                                $('#message-container').show();
-                            },
-                            error: function() {
-                                $('#message-container').text('保存中にエラーが発生しました。');
-                                $('#message-container').show();
-                            }
-                        });
-                    });
-                });
-            </script>
-        {% endif %}
+        <p>平均取得単価から30%下落した際の損益: {{ acquisition_stock_price_fall_30per_profit_and_loss|truncate_decimal|format_number|intcomma }} 円</p>
     {% endif %}
-
-{% if request.method == "POST" %}
-    {% if ticker_symbol is None or simulation_stock_price is None or acquisition_stock_price is None or number_of_shares_purchased is None or data is None %}
-        <p>以下の項目を入力してください：</p>
+    {% if request.method == "POST" %}
         <ul>
-            {% if ticker_symbol is None %}
-                <li>証券コード</li>
+            {% if not ticker_symbol %}
+                <li>証券コードを入力してください。</li>
             {% endif %}
-            {% if simulation_stock_price is None %}
-                <li>シミュレーション株価</li>
+            {% if not company_name %}
+                <li>入力された証券コードに対応する企業が見つかりませんでした。</li>
             {% endif %}
-            {% if acquisition_stock_price is None %}
-                <li>平均取得単価</li>
+            {% if not simulation_stock_price %}
+                <li>シミュレーション株価を入力してください。</li>
             {% endif %}
-            {% if number_of_shares_purchased is None %}
-                <li>購入株枚数</li>
+            {% if not acquisition_stock_price %}
+                <li>平均取得単価を入力してください。</li>
             {% endif %}
-            {% if date is None %}
-                <li>株を購入した日付</li>
+            {% if not number_of_shares_purchased %}
+                <li>購入株枚数を入力してください。</li>
+            {% endif %}
+            {% if company_name and not date %}
+                <li>株を購入した日付を入力してください。</li>
             {% endif %}
         </ul>
-    {% endif %}
-    {% if ticker_symbol is not None and company_name is None %}
-        <p>入力された値では、該当する企業が見つかりませんでした。</p>
-        <p>証券コードを正しく入力してください</p>
-    {% endif %}
-    {% if ticker_symbol is not None and company_name is not None and simulation_stock_profit_and_loss is not None %}
-        {% if date is None %}
-            <p>株を購入した日付が未入力です。</p>
+    
+        {% if company_name and simulation_stock_profit_and_loss %}
+            {% if not date %}
+                <p>株を購入した日付が未入力です。</p>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <button type="submit" name="save" class="btn btn-success" id="save-button" onclick="return confirm('結果を保存しますか？')">結果を保存する</button>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script>
+                    $(document).ready(function() {
+                        $('#save-button').click(function() {
+                            $.ajax({
+                                url: '{% url "save_results" %}',
+                                method: 'POST',
+                                data: $('#calculation-form').serialize(),
+                                success: function(data) {
+                                    $('#message-container').text(data.message)
+                                    $('#message-container').show();
+                                },
+                                error: function() {
+                                    $('#message-container').text('保存中にエラーが発生しました。');
+                                    $('#message-container').show();
+                                }
+                            });
+                        });
+                    });
+                </script>
+            {% endif %}
         {% endif %}
     {% endif %}
-{% endif %}
+    
 </div>
+    
 {% endblock %}

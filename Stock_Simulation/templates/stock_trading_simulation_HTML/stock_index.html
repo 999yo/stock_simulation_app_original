@@ -22,20 +22,28 @@
 {% endblock header %}
 
 {% block content %}
+<p>以下の5つのフォームの入力をしてください -</p>
   <form method="post" action="{% url 'home' %}" id="calculation-form">
       {% csrf_token %}
       {{ form.as_p }}
       <input type="submit" name="calculate" value="計算する" class="btn btn-success">
   </form>
- 
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // カレンダーから選択された日付をフォームに設定
+        var dateInput = document.querySelector('#id_date');
+        dateInput.addEventListener('change', function () {
+            var selectedDate = this.value;
+            // 選択された日付をフォームに設定
+            dateInput.value = selectedDate;
+        });
+    });
+</script>
   <div id="simulation-result">
   {% if ticker_symbol is not None and company_name is not None %}
     <p>証券コード : {{ ticker_symbol }}</p>
     <p>企業名 : {{ company_name }}</p>
     <p>現在株価 : {{ current_stock_price }} 円</p>
-    {% if date is not None %}
-      <p>株を購入した日付: {{ date }} </p>
-    {% endif %}
   {% endif %}
   
   {% if simulation_stock_profit_and_loss is not None %}
@@ -47,9 +55,12 @@
     {% if request.POST.calculate %}
         <p>以下の項目を入力してください：</p>
         <ul>
-            {% if ticker_symbol is None %}
+            {% if ticker_symbol is None  %}
                 <li>証券コード</li>
                 <p>証券コードが未入力か、入力されたコード該当する株がありませんでした。入力した数字が正しいか確認してください</p>
+            {% endif %}
+            {% if not company_name %}
+                <li>入力された証券コードに対応する企業が見つかりませんでした。</li>
             {% endif %}
             {% if simulation_stock_price is None %}
                 <li>シミュレーション株価</li>
@@ -64,14 +75,6 @@
                 <li>株を購入した日付</li>
             {% endif %}
         </ul>
-      {% endif %}
-    {% if ticker_symbol is not None and company_name is None %}
-    <p>入力された値では、該当する企業が見つかりませんでした。証券コードを正しく入力してください</p>
-  {% endif %}
-    {% if date is None %}
-        {% if ticker_symbol is not None and company_name is not None %}
-            <p>株を購入した日付が未入力です。</p>
-        {% endif %}
     {% endif %}
   {% endif %}
 </div>
