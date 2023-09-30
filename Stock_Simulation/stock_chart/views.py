@@ -4,8 +4,6 @@ from django.views import View
 from stock_trading_simulation.models import StockInformation
 from django.shortcuts import redirect
 
-
-
 class StockChartView(View):
     template_name = 'stock_chart.html/stock_data_detail.html'
 

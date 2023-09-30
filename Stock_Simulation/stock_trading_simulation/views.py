@@ -154,7 +154,7 @@ class StockDataListView(ListView):
     template_name = "stock_trading_simulation_HTML/stock_data_list.html"
     model = StockInformation
     context_object_name = "stock_data_list"
-    paginate_by = 10
+    paginate_by = 5
     def get_queryset(self):
         queryset = StockInformation.objects.filter(user=self.request.user).order_by('acquisition_stock_price')
         

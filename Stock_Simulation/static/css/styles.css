@@ -11,16 +11,13 @@
   top: 0; /* ページ上端に固定 */
   height: 60px; 
   box-shadow: 0 2px 4px rgba(100, 112, 136, 0.568);
-  background-color: rgb(125, 226, 201) ; 
 
 }
-
 
 .main-content {
   margin-top: 80px;
   margin-left: 30px;
   margin-right: 30px;
-  background-color: rgb(255, 255, 255);
 }
 
 .h1{
@@ -28,9 +25,7 @@
 }
 
 .page_nation{
-  width: 80%;
   margin: 0 auto;
-  max-width: 500px;
 }
 
 .table-responsive{
@@ -38,22 +33,15 @@
 }
 
 .table{
+  margin-top: 20px;
   margin-bottom: 20px;
 }
-.th5,.td5 {
-  background-color:  rgba(145, 174, 228, 0.39);
-}
-.th10,.td10 {
-  background-color:  rgba(145, 174, 228, 0.678);
-}
-.th30,.td30 {
-  background-color: rgb(145, 174, 228);
+
+.navbar-brand{
+  padding-left: 30px;
 }
 
-.current0{
-  background-color: pink;
-}
-
-.current_profit_and_loss{
-  background-color: rgba(243, 183, 155, 0.925);
+table {
+  border: 5px solid;
+  border-collapse: collapse; /* セルの間隔を縮小 */
 }

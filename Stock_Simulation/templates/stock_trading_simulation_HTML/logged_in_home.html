@@ -30,7 +30,7 @@
     <form method="post" action="{% url 'home' %}" id="calculation-form">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" name="calculate" value="計算する" class="btn btn-success">
+        <input type="submit" name="calculate" value="計算する" class="btn btn-primary">
     </form>
     
     <div id="message-container">
@@ -38,7 +38,9 @@
         <p>証券コード : {{ ticker_symbol }}</p>
         <p>企業名 : {{ company_name }}</p>
         <p>現在株価 : {{ current_stock_price }} 円</p>
+       
         {% if date is not None %}
+        
             <p>株を購入した日付: {{ date }} </p>
         {% endif %}
     {% endif %}
