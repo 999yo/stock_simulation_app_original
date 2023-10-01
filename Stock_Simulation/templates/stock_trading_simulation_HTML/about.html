@@ -48,9 +48,6 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/about/slick-theme.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/about/about.css' %}">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
-
 
   {% endblock header %}
 
@@ -58,26 +55,17 @@
   <div class = "main_content">
     <div class="center">
       <div class="slick-slider">
-        <a href="{% static 'image/about/simulation_result.jpg' %}" data-lightbox="image-group" data-title="画像1">
-          <img src="{% static 'image/about/simulation_result.jpg' %}" alt="画像1">
-        </a>
-        <a href="{% static 'image/about/simulation_list.jpg' %}" data-lightbox="image-group" data-title="画像2">
-          <img src="{% static 'image/about/simulation_list.jpg' %}" alt="画像2">
-        </a>
-        <a href="{% static 'image/about/simulation_detail.jpg' %}" data-lightbox="image-group" data-title="画像3">
-          <img src="{% static 'image/about/simulation_detail.jpg' %}" alt="画像3">
-        </a>
+        <div><img src="{% static 'image/about/simulation_result.jpg' %}" alt="画像1"></div>
+        <div><img src="{% static 'image/about/simulation_list.jpg' %}" alt="画像2"></div>
+        <div><img src="{% static 'image/about/simulation_detail.jpg' %}" alt="画像3"></div>
       </div>
     </div>
-    <button type="button" class="slick-prev">Previous</button>
     <p>株式売買シミュレーションは、株式取引における損益を計算するツールです。</p>
     <p>株式投資において、損失は避けられません。</p>
     <p>株式投資でありがちなのが、株の損失を確定できず、株を何年も保有し続ける「株の塩漬け」です。</p>
     <p>元本を効率的に活用し、大きな損失を抑えるためには、あらかじめ許容できる損失を設定し、その基準に従って株を購入することが重要です。</p>
     <p>このアプリを活用して、計画的な株式投資を行いましょう</p>
-    
-    <script src="js/lightbox-plus-jquery.min.js"></script>
-    <script src="js/lightbox.min.js"></script>
+
   <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
   <script type="text/javascript" src="{% static 'js\about\slick.min.js' %}"></script>
@@ -87,16 +75,8 @@
         arrows:true,
         autoplay: true,
         dots: true,
-
       });
     });
   </script>
-  <script>
-    lightbox.option({
-      'resizeDuration': 200,
-      'wrapAround': true
-    });
-  </script>
-  
 
 {% endblock %}

@@ -113,6 +113,10 @@
     content: '←';
 }
 
+.slick-prev:before, .slick-next:before {
+    color: #000;/*黒にする*/
+    opacity: 1;/*デフォルトは.75が指定されている*/
+}
 /* Dots */
 .slick-dotted.slick-slider
 {
