@@ -1,17 +1,34 @@
-/* about.css */
-.carousel-control-prev {
-    color: red; /* 前矢印の色を赤に設定 */
+img {
+    width: 80%; /* 幅を50%に縮小 */
+    height: auto; /* 高さを自動調整して比例させる */
 }
 
-.carousel-control-next {
-    color: red; /* 後矢印の色を赤に設定 */
+/*全て共通：hideエリアをはじめは非表示*/
+.hide-area{
+	display: none;
 }
 
-/* custom-carousel.css */
-.carousel-control-prev-icon {
-    background-color: rgb(165, 234, 236); /* 矢印の色を赤に設定 */
+/*全て共通：モーダルのボタンの色を変更したい場合*/
+.modaal-close:after, 
+.modaal-close:before{
+	background:#ccc;	
 }
 
-.carousel-control-next-icon {
-    background-color: red; /* 矢印の色を赤に設定 */
+.modaal-close:focus:after,
+.modaal-close:focus:before,
+.modaal-close:hover:after,
+.modaal-close:hover:before{
+	background:#666;
+}
+
+/*確認を促すモーダル：タイトルの色を変更したい場合*/
+#modaal-title{
+	font-size:1.2rem;
+	text-align: center;
+	margin: 0 0 20px 0;
+}
+
+/*動画表示のモーダル：余白を変更したい場合*/
+.modaal-video .modaal-inner-wrapper{
+	padding:0;
 }

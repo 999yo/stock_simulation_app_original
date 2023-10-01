@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     'stock_trading_simulation',
     'accounts',
     'stock_chart',
+    'django_static_md5url',
+    
 ]
 
 MIDDLEWARE = [

@@ -1,9 +1,40 @@
-$('.slider').slick({
-    autoplay: true,//自動的に動き出すか。初期値はfalse。
-    infinite: true,//スライドをループさせるかどうか。初期値はtrue。
-    slidesToShow: 1,//スライドを画面に3枚見せる
-    slidesToScroll: 1,//1回のスクロールで3枚の写真を移動して見せる
-    prevArrow: '<div class="slick-prev"></div>',//矢印部分PreviewのHTMLを変更
-    nextArrow: '<div class="slick-next"></div>',//矢印部分NextのHTMLを変更
-    dots: true,//下部ドットナビゲーションの表示
+// クリック可能な画像をクリックしたときの処理
+document.querySelector('.clickable-image').addEventListener('click', function() {
+    // モーダルウィンドウを取得
+    var modal = document.createElement('div');
+    modal.className = 'modal';
+
+    // 画像をモーダルウィンドウ内に追加
+    var modalContent = document.createElement('img');
+    modalContent.className = 'modal-content';
+    modalContent.src = this.src;
+
+    // 閉じるボタンを追加
+    var closeBtn = document.createElement('span');
+    closeBtn.className = 'close';
+    closeBtn.innerHTML = '&times;';
+
+    // モーダルウィンドウにコンテンツを追加
+    modal.appendChild(modalContent);
+    modal.appendChild(closeBtn);
+
+    // モーダルウィンドウをドキュメントに追加
+    document.body.appendChild(modal);
+
+    // 画像をクリックしたときにモーダルウィンドウを表示
+    modal.style.display = 'block';
+
+    // 閉じるボタンがクリックされたときにモーダルウィンドウを非表示
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        document.body.removeChild(modal);
+    });
+
+    // モーダルウィンドウの背景がクリックされたときにモーダルウィンドウを非表示
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+            document.body.removeChild(modal);
+        }
+    });
 });
