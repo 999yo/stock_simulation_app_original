@@ -52,23 +52,29 @@
   {% endblock header %}
 
 {% block content %}
+<div id="imageModal" class="modal">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
   <div class = "main_content">
     <div class="center">
       <div class="slick-slider">
-        <div><img src="{% static 'image/about/simulation_result.jpg' %}" alt="画像1"></div>
-        <div><img src="{% static 'image/about/simulation_list.jpg' %}" alt="画像2"></div>
-        <div><img src="{% static 'image/about/simulation_detail.jpg' %}" alt="画像3"></div>
+        <div><img src="{% static 'image/about/simulation_result.jpg' %}" alt="画像1" class="image-clickable"></div>
+        <div><img src="{% static 'image/about/simulation_list.jpg' %}" alt="画像2" class="image-clickable"></div>
+        <div><img src="{% static 'image/about/simulation_detail.jpg' %}" alt="画像3" class="image-clickable"></div>
       </div>
     </div>
+    <h1 class="h1">株式売買シミュレーションとは</h1>
     <p>株式売買シミュレーションは、株式取引における損益を計算するツールです。</p>
     <p>株式投資において、損失は避けられません。</p>
-    <p>株式投資でありがちなのが、株の損失を確定できず、株を何年も保有し続ける「株の塩漬け」です。</p>
+    <p>株式投資でよく起こるのは、株の損失を確定できず、株を何年も保有し続ける「株の塩漬け」や、大きく下落したときにやっと損失確定し、元本を大幅に減らしてしまうことです。
     <p>元本を効率的に活用し、大きな損失を抑えるためには、あらかじめ許容できる損失を設定し、その基準に従って株を購入することが重要です。</p>
-    <p>このアプリを活用して、計画的な株式投資を行いましょう</p>
+    <p>計画的な株式投資に、この売買シミュレーションを活用してみてください。</p>
 
   <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
   <script type="text/javascript" src="{% static 'js\about\slick.min.js' %}"></script>
+  <script src="{% static 'js/about/about.js' %}"></script>
   <script type="text/javascript">
     $(document).ready(function(){
       $('.slick-slider').slick({
